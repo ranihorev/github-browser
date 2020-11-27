@@ -1,51 +1,49 @@
 import { Button, CircularProgress } from '@material-ui/core';
 import React from 'react';
 import { usePaginatedQuery } from 'react-query';
-import { TableRender } from './TableRender';
+import { BaseProps, TableRender } from './TableRender';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
-export interface Column<T> {
-  key: keyof T;
-  header: string;
-  renderFunc?: (value: string | number) => React.ReactElement;
-  className?: string;
-}
-
-interface Props<T> {
-  columns: Column<T>[];
+interface Props<T> extends BaseProps<T> {
   fetchQuery: (page: number) => Promise<T[]>;
   queryId: { name: string; props: Record<string, string> };
 }
 
 const MIN_PAGE = 1;
 
-export function TableFetcher<T extends Record<string, string | number>>({ columns, queryId, fetchQuery }: Props<T>) {
+export function TableFetcher<T extends Record<string, string | number>>({
+  queryId,
+  fetchQuery,
+  ...tableRenderProps
+}: Props<T>) {
+  const { sortBy } = tableRenderProps;
   const [page, setPage] = React.useState(MIN_PAGE);
-  const { latestData, resolvedData, isLoading, error } = usePaginatedQuery(
-    [queryId.name, { ...queryId.props, page }],
+  const { latestData, resolvedData, isLoading, error, isFetching } = usePaginatedQuery(
+    [queryId.name, { ...queryId.props, page, ...sortBy }],
     () => fetchQuery(page),
     { refetchOnWindowFocus: false },
   );
 
   return (
     <React.Fragment>
-      {!error && <div className="mb-2">Current Page: {page}</div>}
       {isLoading ? (
         <CircularProgress />
       ) : !error ? (
-        <TableRender columns={columns} data={resolvedData} />
+        <TableRender {...tableRenderProps} data={resolvedData} isFetching={isFetching} />
       ) : (
         <div>Failed to fetch data - {(error as any)?.message}</div>
       )}
       {resolvedData && (
-        <div className="flex flex-row items-center">
+        <div className="flex flex-row items-center justify-center">
           <Button disabled={page === MIN_PAGE} onClick={() => setPage((old) => Math.max(old - 1, MIN_PAGE))}>
-            Previous Page
+            <NavigateNextIcon className="transform rotate-180" />
           </Button>{' '}
+          <div>Page {page}</div>
           <Button
             onClick={() => setPage((old) => (!latestData ? old : old + 1))}
             disabled={!latestData || !latestData.length}
           >
-            Next Page
+            <NavigateNextIcon className="" />
           </Button>{' '}
         </div>
       )}

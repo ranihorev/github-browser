@@ -1,10 +1,11 @@
 import { Link, Tooltip } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import { Octokit } from '@octokit/rest';
+import { Octokit, RestEndpointMethodTypes } from '@octokit/rest';
 import cx from 'classnames';
 import copy from 'copy-to-clipboard';
+import { format } from 'date-fns';
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 import { Container } from '../components/Container';
 import { alertOnRateLimit } from '../components/rateLimitAlert';
 import { TableFetcher } from '../components/TableFetcher';
@@ -26,7 +27,7 @@ const ShaRender: React.FC<{ value: string | number }> = ({ value }) => {
   return (
     <Tooltip title={`${value} - ${copied ? 'Copied!' : `click to copy`}`} placement="top-start">
       <div
-        className="pointer"
+        className="cursor-pointer"
         onClick={() => {
           copy(value.toString());
           setCopied(true);
@@ -57,8 +58,17 @@ const columns: Column<CommitData>[] = [
     key: 'author',
     header: 'Author',
   },
-  { key: 'numComments', header: 'Comments' },
-  { key: 'date', header: 'Date' },
+  {
+    key: 'date',
+    header: 'Date',
+    renderFunc: (value) => {
+      try {
+        return format(new Date(value), 'Pp');
+      } catch (e) {
+        return value;
+      }
+    },
+  },
   {
     key: 'message',
     header: 'Message',
@@ -71,6 +81,7 @@ const columns: Column<CommitData>[] = [
         <React.Fragment>{value}</React.Fragment>
       ),
   },
+  { key: 'numComments', header: 'Comments' },
   {
     key: 'url',
     header: 'URL',
@@ -82,18 +93,25 @@ const columns: Column<CommitData>[] = [
   },
 ];
 
+type ResponseType = RestEndpointMethodTypes['repos']['listCommits']['response'];
+
 export const Commits: React.FC = () => {
   const { userId, repoName } = useParams<{ userId: string; repoName: string }>();
 
   const fetchQuery = React.useCallback(
     async (page: number) => {
-      const resp = await octokit.repos.listCommits({ owner: userId, repo: repoName, per_page: 50, page });
-      // const resp = await new Promise<RestEndpointMethodTypes['repos']['listCommits']['response']>((resolve, reject) => {
-      //   resolve({
-      //     data: require('../fakeCommitsResponse.json').slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
-      //     headers: {},
-      //   } as RestEndpointMethodTypes['repos']['listCommits']['response']);
-      // });
+      let resp;
+      if (process.env.REACT_APP_USE_FAKE_DATA) {
+        // For testing purposes
+        resp = await new Promise<ResponseType>((resolve, reject) => {
+          resolve({
+            data: require('../fakeCommitsResponse.json').slice((page - 1) * 20, page * 20),
+            headers: {},
+          } as ResponseType);
+        });
+      } else {
+        resp = await octokit.repos.listCommits({ owner: userId, repo: repoName, per_page: 50, page });
+      }
       alertOnRateLimit(resp);
 
       const data: CommitData[] = resp.data.map((item) => ({
@@ -114,7 +132,14 @@ export const Commits: React.FC = () => {
   return (
     <Container>
       <Title>
-        {userId}/{repoName} commits
+        <Link component={RouterLink} to={`/user/${userId}/repos`}>
+          {userId}
+        </Link>
+        &nbsp;/&nbsp;
+        <Link component={RouterLink} to={`/user/${userId}/repos/${repoName}/commits`} className="font-bold">
+          {repoName}
+        </Link>
+        &nbsp;- commits
       </Title>
       <TableFetcher columns={columns} fetchQuery={fetchQuery} queryId={queryId} />
     </Container>

@@ -1,38 +1,35 @@
 # Github Repo Browser
 
+Browse public Github repositories of users and review the repo's commits 
+
+## Try it out
+
+Check it out on https://github-browser.onrender.com/
+
+## Getting started
+
+1. Make sure that node.js and yarn are installed
+2. Run `yarn`
+3. Run `yarn start` for dev mode or `yarn start:watch` for watch mode
+4. Go to `localhost:3000`
+5. Run `yarn build` to build the app in production mode
+
 ## TODOs:
-- Add eslint
-- Add tests
-- Handle rate limit
+
+- Add repo description to commits view
+- Better handling of rate limit 
+- Add page and sorting to url params
+- Link to author in commits view
+- Filters & search
+- New feature: Branch view + view branch commits
+- Better error messages
+- Column resizing
+- Replace pagination with infinite scroll
 - Review bundle size
-- Pagination (Infinite scroll is much better imo)
-- Table resizing
-- Filtering
-- Branches view
-- Handling non-existent users
-- Copy SHA - add success feedback
 
+## Tests
 
-## Available Scripts
+There are no tests at the moment, and most of the tests were done manually, by testing different users and repos (including invalid inputs).
+The UI is pretty simple and the most important to test in my opinion is the interface with Github, such as handling rate limiting.
+To test the app without interacting with Github, set `REACT_APP_USE_FAKE_DATA=1` in `.env.development.local` and re-run the dev server. 
 
-In the project directory, you can run:
-
-### `yarn start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!

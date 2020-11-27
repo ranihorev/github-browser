@@ -4,7 +4,7 @@ import { Tooltip } from '@material-ui/core';
 
 export const Title: React.FC<{ tooltip?: string }> = ({ children, tooltip }) => {
   return (
-    <div className="text-lg capitalize font-semibold mb-6 flex flex-row items-center">
+    <div className="text-lg capitalize font-medium mb-6 flex flex-row items-center">
       {children}
       {tooltip && (
         <Tooltip title="Repos are sort by: 2 * #_forks + #_stars. More robust sorting coming soon">
