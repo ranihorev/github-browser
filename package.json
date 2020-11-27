@@ -1,0 +1,66 @@
+{
+  "name": "netflix-repos",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.11.1",
+    "@material-ui/icons": "^4.9.1",
+    "@octokit/rest": "^18.0.9",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.53",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-router-dom": "^5.1.6",
+    "classnames": "^2.2.6",
+    "copy-to-clipboard": "^3.3.1",
+    "lodash": "^4.17.20",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-query": "^2.26.3",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.1",
+    "typescript": "^4.1.2",
+    "web-vitals": "^0.2.4"
+  },
+  "scripts": {
+    "start:watch": "npm-run-all -p watch:css start:react",
+    "start:react": "react-scripts start",
+    "start": "yarn build:css && yarn start:react",
+    "build": "NODE_ENV=production yarn build:css && react-scripts build",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject",
+    "build:css": "postcss src/tailwind.css -o src/index.css",
+    "watch:css": "postcss -w src/tailwind.css -o src/index.css"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@octokit/types": "^5.5.0",
+    "@types/classnames": "^2.2.11",
+    "@types/lodash": "^4.14.165",
+    "autoprefixer": "^10.0.2",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.1.10",
+    "postcss-cli": "^8.3.0",
+    "tailwindcss": "^2.0.1"
+  }
+}
