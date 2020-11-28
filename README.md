@@ -29,7 +29,7 @@ Check it out on https://github-browser.onrender.com/
 
 ## Tests
 
-There are no tests at the moment, and most of the tests were done manually, by testing different users and repos (including invalid inputs).
-The UI is pretty simple and the most important to test in my opinion is the interface with Github, such as handling rate limiting.
+There are no tests at the moment, and most of the testing was done manually, by testing different users and repos (including invalid inputs).
+The UI is pretty simple and the most important thing to test in my opinion is the interface with Github, such as handling rate limiting.
 To test the app without interacting with Github, set `REACT_APP_USE_FAKE_DATA=1` in `.env.development.local` and re-run the dev server. 
 
